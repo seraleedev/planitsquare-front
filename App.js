@@ -1,6 +1,6 @@
 import TodoList from "./components/TodoList.js";
 import { model } from "./model/model.js";
-import { submitNewData, loadTodo, todoListArray } from "./util/index.js";
+import { submitNewData, loadTodo, todoList, loadNodes } from "./util/index.js";
 import Form from "./components/Form.js";
 
 function App() {
@@ -15,8 +15,10 @@ function App() {
 
   this.init = () => {
     // this.todoData = model;
+    loadNodes();
     loadTodo();
-    // this.todoData = todoListArray;
+
+    // this.todoData = todoList;
     // this.formEle = new Form(this.$form);
     // this.todoListEle = new TodoList(this.$listContainer, this.todoData);
     submitBtn.addEventListener("click", submitNewData);

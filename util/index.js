@@ -1,8 +1,13 @@
-export let todoListArray = [];
+export let todoList = [];
 
 const Ul = document.querySelector("#todo-list");
 const CountContainer = document.querySelector("#count-container");
+const AllBtnContainer = document.querySelector("#allBtn");
 const TODOLIST = "toDoList";
+//최초 노드 렌더링
+export const loadNodes = () => {
+  renderAllBtn();
+};
 
 // 로컬스토리지 데이터 로드 함수
 export const loadTodo = () => {
@@ -10,28 +15,28 @@ export const loadTodo = () => {
 
   if (savedData != null) {
     const localTodoList = JSON.parse(savedData);
-    todoListArray = localTodoList;
-    todoListArray.forEach((item) => renderItem(item));
+    todoList = localTodoList;
+    todoList.forEach((item) => renderItem(item));
   }
   renderTodoCount();
 };
 
 // 데이터 추가시 로컬스토리지 저장 함수
 const saveNewTodo = (data) => {
-  todoListArray.push(data);
-  localStorage.setItem(TODOLIST, JSON.stringify(todoListArray));
+  todoList.push(data);
+  localStorage.setItem(TODOLIST, JSON.stringify(todoList));
 };
 
 // 수정 데이터 저장함수
 const saveEditList = (id, key, value) => {
-  const targetItem = todoListArray.find((item) => item.id == id);
+  const targetItem = todoList.find((item) => item.id == id);
   const editData = {
     ...targetItem,
     [key]: value,
   };
-  const targetIndex = todoListArray.indexOf(targetItem);
-  todoListArray[targetIndex] = editData;
-  localStorage.setItem(TODOLIST, JSON.stringify(todoListArray));
+  const targetIndex = todoList.indexOf(targetItem);
+  todoList[targetIndex] = editData;
+  localStorage.setItem(TODOLIST, JSON.stringify(todoList));
   renderTodoCount();
 };
 
@@ -52,10 +57,10 @@ export const submitNewData = (event) => {
 
 // 삭제 버튼 클릭 핸들러
 export const deleteTodo = (id) => {
-  todoListArray = todoListArray.filter((item) => item.id !== id);
-  localStorage.setItem(TODOLIST, JSON.stringify(todoListArray));
+  todoList = todoList.filter((item) => item.id !== id);
+  localStorage.setItem(TODOLIST, JSON.stringify(todoList));
   Ul.innerHTML = "";
-  todoListArray.forEach((item) => renderItem(item));
+  todoList.forEach((item) => renderItem(item));
   renderTodoCount();
 };
 
@@ -101,6 +106,7 @@ export const renderItem = (data) => {
 
   const EditBtn = document.createElement("button");
   EditBtn.textContent = "수정";
+  EditBtn.disabled = data.isCompleted;
   EditBtn.addEventListener("click", (event) => editTodo(event.target, data.id));
 
   const DeleteBtn = document.createElement("button");
@@ -116,6 +122,35 @@ export const renderItem = (data) => {
 
 // 카운트 노드 생성
 export const renderTodoCount = () => {
-  const completedTodo = todoListArray.filter((todo) => todo.isCompleted);
-  CountContainer.innerHTML = `<p>전체: ${todoListArray.length}</p><p>완료: ${completedTodo.length}</p>`;
+  const completedTodo = todoList.filter((todo) => todo.isCompleted);
+  CountContainer.innerHTML = `<span>전체: ${todoList.length}</span> <span>완료: ${completedTodo.length}</span>`;
+};
+
+// 전체 할일 핸들링 노드 생성
+const renderAllBtn = () => {
+  const AllCheckBtn = document.createElement("button");
+  AllCheckBtn.innerText = "전체 완료";
+  AllCheckBtn.addEventListener("click", CheckAll);
+  const AllDeleteBtn = document.createElement("button");
+  AllDeleteBtn.innerText = "전체 삭제";
+  AllDeleteBtn.addEventListener("click", DeleteAll);
+
+  AllBtnContainer.appendChild(AllCheckBtn);
+  AllBtnContainer.appendChild(AllDeleteBtn);
+};
+
+// 전체 할일 완료하기
+const CheckAll = () => {
+  todoList = todoList.map((todo) => ({ ...todo, isCompleted: true }));
+  localStorage.setItem(TODOLIST, JSON.stringify(todoList));
+  todoList.forEach((item) => renderItem(item));
+  renderTodoCount();
+};
+
+// 전체 할일 삭제하기
+const DeleteAll = () => {
+  todoList = [];
+  localStorage.setItem(TODOLIST, JSON.stringify(todoList));
+  Ul.innerHTML = "";
+  renderTodoCount();
 };
