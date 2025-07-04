@@ -1,8 +1,9 @@
 export let todoListArray = [];
 export let completedTodo = todoListArray.filter((todo) => todo.isCompleted);
-const ul = document.querySelector("#todo-list");
+const Ul = document.querySelector("#todo-list");
 const TODOLIST = "toDoList";
 
+// 로컬스토리지 데이터 로드 함수
 export const loadTodo = () => {
   const savedData = localStorage.getItem(TODOLIST);
 
@@ -13,59 +14,101 @@ export const loadTodo = () => {
   }
 };
 
-const saveTodo = (data) => {
+// 데이터 추가시 로컬스토리지 저장 함수
+const saveNewTodo = (data) => {
   todoListArray.push(data);
   localStorage.setItem(TODOLIST, JSON.stringify(todoListArray));
 };
 
-export const submitData = (event) => {
-  const addText = document.querySelector("#addText");
+// 수정 데이터 저장함수
+const saveEditList = (id, editData) => {
+  const targetItem = todoListArray.find((item) => item.id == id);
+  const targetIndex = todoListArray.indexOf(targetItem);
+  todoListArray[targetIndex] = editData;
+  localStorage.setItem(TODOLIST, JSON.stringify(todoListArray));
+};
+
+// 할일 추가 핸들러
+export const submitNewData = (event) => {
   event.preventDefault();
+  const addText = document.querySelector("#addText");
   const newData = {
     id: addText.value + Math.floor(Math.random() * 100).toString(),
     name: addText.value,
     isCompleted: false,
   };
   renderItem(newData);
-  saveTodo(newData);
+  saveNewTodo(newData);
   addText.value = "";
 };
 
+// 삭제 버튼 클릭 핸들러
 export const deleteTodo = (id) => {
   todoListArray = todoListArray.filter((item) => item.id !== id);
   localStorage.setItem(TODOLIST, JSON.stringify(todoListArray));
-  ul.innerHTML = "";
+  Ul.innerHTML = "";
   todoListArray.forEach((item) => renderItem(item));
 };
 
+// 수정 버튼 클릭 핸들러
 export const editTodo = (target, id) => {
   const newValue = target.previousSibling.value;
-  const targetItem = todoListArray.find((item) => item.id == id);
-  const targetIndex = todoListArray.indexOf(targetItem);
   const editData = {
     ...targetItem,
     name: newValue,
   };
-  todoListArray[targetIndex] = editData;
-  localStorage.setItem(TODOLIST, JSON.stringify(todoListArray));
+  saveEditList(id, editData);
 };
 
-export const renderItem = (data) => {
-  const li = document.createElement("li");
-  const input = document.createElement("input");
-  input.type = "text";
-  input.value = data.name;
-  input.readOnly = data.isCompleted;
+// 체크박스 클릭 핸들러
+const checkTodo = (target, id) => {
+  const targetInput = target.nextSibling;
+  const targetEditBtn = targetInput.nextSibling;
 
-  const deleteBtn = document.createElement("button");
-  const editBtn = document.createElement("button");
-  editBtn.textContent = "수정";
-  deleteBtn.textContent = "X";
-  editBtn.addEventListener("click", (event) => editTodo(event.target, data.id));
-  deleteBtn.addEventListener("click", () => deleteTodo(data.id));
-  li.appendChild(input);
-  li.appendChild(editBtn);
-  li.appendChild(deleteBtn);
-  li.id = todoListArray.length + 1;
-  ul.appendChild(li);
+  if (target.checked) {
+    targetInput.disabled = true;
+    targetInput.readOnly = true;
+    targetEditBtn.disabled = true;
+  } else {
+    targetInput.disabled = false;
+    targetInput.readOnly = false;
+    targetEditBtn.disabled = false;
+  }
+
+  const editData = {
+    ...targetItem,
+    isCompleted: target.checked,
+  };
+  saveEditList(id, editData);
+};
+
+// 리스트 노드 생성
+export const renderItem = (data) => {
+  const Li = document.createElement("li");
+  const Checkbox = document.createElement("input");
+  Checkbox.type = "checkbox";
+  Checkbox.checked = data.isCompleted;
+  Checkbox.addEventListener("change", (event) =>
+    checkTodo(event.target, data.id)
+  );
+
+  const Input = document.createElement("input");
+  Input.type = "text";
+  Input.value = data.name;
+  Input.readOnly = data.isCompleted;
+  Input.disabled = data.isCompleted;
+
+  const EditBtn = document.createElement("button");
+  EditBtn.textContent = "수정";
+  EditBtn.addEventListener("click", (event) => editTodo(event.target, data.id));
+
+  const DeleteBtn = document.createElement("button");
+  DeleteBtn.textContent = "X";
+  DeleteBtn.addEventListener("click", () => deleteTodo(data.id));
+
+  Li.appendChild(Checkbox);
+  Li.appendChild(Input);
+  Li.appendChild(EditBtn);
+  Li.appendChild(DeleteBtn);
+  Ul.appendChild(Li);
 };
