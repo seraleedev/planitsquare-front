@@ -6,16 +6,15 @@ const AllBtnContainer = document.querySelector("#allBtn");
 const TODOLIST = "toDoList";
 
 // 로컬스토리지 데이터 로드 함수
-export const loadTodo = () => {
+export const loadTodo = (todoList) => {
+  const TODOLIST = "toDoList";
   const savedData = localStorage.getItem(TODOLIST);
 
   if (savedData != null) {
-    const localTodoList = JSON.parse(savedData);
-    todoList = localTodoList;
-    todoList.forEach((item) => renderItem(item));
+    const savedTodoList = JSON.parse(savedData);
+    return savedTodoList;
   }
-  renderTodoCount();
-  renderAllBtn();
+  return todoList;
 };
 
 // 데이터 추가시 로컬스토리지 저장 함수
@@ -68,7 +67,7 @@ export const editTodo = (target, id) => {
 };
 
 // 체크박스 클릭 핸들러
-const checkTodo = (target, id) => {
+export const checkTodo = (target, id) => {
   const targetInput = target.nextSibling;
   const targetEditBtn = targetInput.nextSibling;
 
@@ -82,7 +81,7 @@ const checkTodo = (target, id) => {
     targetEditBtn.disabled = false;
   }
 
-  saveEditList(id, "isCompleted", target.checked);
+  // saveEditList(id, "isCompleted", target.checked);
 };
 
 // 리스트 노드 생성
