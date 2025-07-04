@@ -1,47 +1,53 @@
 export let todoListArray = [];
+const ul = document.querySelector("#todo-list");
 const TODOLIST = "toDoList";
 
 export const loadTodo = () => {
   const savedData = localStorage.getItem(TODOLIST);
 
   if (savedData != null) {
-    const myTodoList = JSON.parse(savedData);
-    todoListArray = myTodoList;
-    renderTodoItem(todoListArray);
+    const localTodoList = JSON.parse(savedData);
+    todoListArray = localTodoList;
+    todoListArray.forEach((item) => renderItem(item));
   }
 };
 
-const saveTodo = (text) => {
-  const obj = {
-    id: todoListArray.length + 1,
-    name: text,
-    isCompleted: false,
-  };
-  todoListArray.push(obj);
+const saveTodo = (data) => {
+  todoListArray.push(data);
   localStorage.setItem(TODOLIST, JSON.stringify(todoListArray));
 };
 
 export const submitData = (event) => {
   const addText = document.querySelector("#addText");
   event.preventDefault();
-  const newTodo = addText.value;
-  saveTodo(newTodo);
-  renderTodoItem(todoListArray);
+  const newData = {
+    id: addText.value,
+    name: addText.value,
+    isCompleted: false,
+  };
+  renderItem(newData);
+  saveTodo(newData);
   addText.value = "";
 };
 
-export const renderTodoItem = (data) => {
-  const listContainer = document.querySelector("#todo-list");
-  const list = `<ul>${data
-    .map(
-      (todo) =>
-        `<li>${
-          todo.isCompleted
-            ? `<p>${todo.name}</p>`
-            : `<input type='text' value="${todo.name}"/>`
-        } <button type="button" >X</button></li>`
-    )
-    .join("")}</ul>`;
+export const deleteTodo = (id) => {
+  todoListArray = todoListArray.filter((item) => item.id !== id);
+  localStorage.setItem(TODOLIST, JSON.stringify(todoListArray));
+  ul.innerHTML = "";
+  todoListArray.forEach((item) => renderItem(item));
+};
 
-  listContainer.innerHTML = list;
+export const renderItem = (data) => {
+  const li = document.createElement("li");
+  const input = document.createElement("input");
+  input.type = "text";
+  input.value = data.name;
+  input.readOnly = data.isCompleted;
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "X";
+  deleteBtn.addEventListener("click", () => deleteTodo(data.id));
+  li.appendChild(input);
+  li.appendChild(deleteBtn);
+  li.id = todoListArray.length + 1;
+  ul.appendChild(li);
 };
