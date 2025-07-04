@@ -1,13 +1,9 @@
-export let todoList = [];
+let todoList = [];
 
 const Ul = document.querySelector("#todo-list");
 const CountContainer = document.querySelector("#count-container");
 const AllBtnContainer = document.querySelector("#allBtn");
 const TODOLIST = "toDoList";
-//최초 노드 렌더링
-export const loadNodes = () => {
-  renderAllBtn();
-};
 
 // 로컬스토리지 데이터 로드 함수
 export const loadTodo = () => {
@@ -19,6 +15,7 @@ export const loadTodo = () => {
     todoList.forEach((item) => renderItem(item));
   }
   renderTodoCount();
+  renderAllBtn();
 };
 
 // 데이터 추가시 로컬스토리지 저장 함수
