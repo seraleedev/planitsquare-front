@@ -12,7 +12,7 @@ function App($container) {
       totalTodo: 0,
     };
   };
-
+  this.setup();
   // UI구성
   this.template = () => {
     return `<Header id="header"></Header>
@@ -22,7 +22,7 @@ function App($container) {
 
   // 마운트 시
   this.mounted = () => {
-    this.render();
+    this.setState();
 
     const $header = document.querySelector("#header");
     const $form = document.querySelector("#addForm");
@@ -31,9 +31,6 @@ function App($container) {
     new Head($header, this.state);
     new Form($form, this.state);
     new TodoList($todoList, this.state);
-
-    // const newData = loadTodo(this.state.todoList);
-    // console.log(newData);
   };
 
   // UI 렌더링
@@ -42,13 +39,11 @@ function App($container) {
   };
 
   //컴포넌트 이벤트
-  this.setEvent = () => {
-    
-  };
+  this.setEvent = () => {};
 
-  // 상태 변경 후 렌더링
-  this.setState = (newState) => {
-    this.state = { ...this.state, ...newState };
+  // 상태 변경
+  this.setState = () => {
+    this.state = { ...this.state, todoList: loadTodo(this.state.todoList) };
     this.render();
   };
 
@@ -68,7 +63,7 @@ function App($container) {
   };
 
    this.init();*/
-  this.setup();
+
   this.mounted();
 }
 

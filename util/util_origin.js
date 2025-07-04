@@ -1,9 +1,9 @@
-let originTodoList = [];
+let todoList = [];
 
 const Ul = document.querySelector("#todo-list");
 const CountContainer = document.querySelector("#count-container");
 const AllBtnContainer = document.querySelector("#allBtn");
-export const TODOLIST = "toDoList";
+const TODOLIST = "toDoList";
 
 // 로컬스토리지 데이터 로드 함수
 export const loadTodo = (todoList) => {
@@ -11,9 +11,12 @@ export const loadTodo = (todoList) => {
 
   if (savedData != null) {
     const savedTodoList = JSON.parse(savedData);
-    return savedTodoList;
+    todoList = savedTodoList;
+    todoList.forEach((item) => renderItem(item));
   }
-  return todoList;
+
+  renderTodoCount();
+  renderAllBtn();
 };
 
 // 데이터 추가시 로컬스토리지 저장 함수
@@ -23,7 +26,7 @@ const saveNewTodo = (data) => {
 };
 
 // 수정 데이터 저장함수
-const saveEditList = (id, key, value, todoList, callBackFn) => {
+const saveEditList = (id, key, value) => {
   const targetItem = todoList.find((item) => item.id == id);
   const editData = {
     ...targetItem,
@@ -32,7 +35,7 @@ const saveEditList = (id, key, value, todoList, callBackFn) => {
   const targetIndex = todoList.indexOf(targetItem);
   todoList[targetIndex] = editData;
   localStorage.setItem(TODOLIST, JSON.stringify(todoList));
-  // renderTodoCount();
+  renderTodoCount();
 };
 
 // 할일 추가 핸들러
@@ -68,7 +71,7 @@ export const editTodo = (target, id) => {
 // 체크박스 클릭 핸들러
 export const checkTodo = (target, id) => {
   const targetInput = target.nextSibling;
-  const targetEditBtn = document.querySelector(".editBtn");
+  const targetEditBtn = targetInput.nextSibling;
 
   if (target.checked) {
     targetInput.disabled = true;

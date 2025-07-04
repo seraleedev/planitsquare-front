@@ -1,4 +1,4 @@
-import { loadTodo, checkTodo } from "../util/index.js";
+import { loadTodo, checkTodo, renderItem } from "../util/index.js";
 
 export default function TodoList($container, props) {
   this.setup = () => {
@@ -31,13 +31,11 @@ export default function TodoList($container, props) {
     $container.innerHTML = this.template();
   };
 
-  this.setState = (newList) => {
-    this.state = { ...this.state, todoList: newList };
-    this.render();
-  };
-  this.setEvent = () => {
-    this.setState(loadTodo(this.state.todoList));
-  };
+  this.render();
 
-  this.setEvent();
+  const Checkboxes = document.querySelectorAll(".checkbox");
+
+  Checkboxes.forEach((ele) =>
+    ele.addEventListener("change", (event) => checkTodo(event.target))
+  );
 }
