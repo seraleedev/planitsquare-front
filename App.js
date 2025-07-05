@@ -8,11 +8,9 @@ function App($container) {
   this.setup = () => {
     this.state = {
       todoList: [],
-      completeTodo: 0,
-      totalTodo: 0,
     };
   };
-  this.setup();
+
   // UI구성
   this.template = () => {
     return `<Header id="header"></Header>
@@ -63,7 +61,7 @@ function App($container) {
   };
 
    this.init();*/
-
+  this.setup();
   this.mounted();
 }
 
