@@ -11,17 +11,20 @@ export default function TodoList(props) {
   this.template = () => {
     return this.state.todoList
       .map(
-        (data) => `<li class="list-item">
-      <input type="checkbox" ${
-        data.isCompleted ? "checked" : ""
-      } class="checkbox" data-id="${data.id}" name="${data.id}-check"/>
-      <input type="text" value="${data.name}" ${
-          data.isCompleted ? "disabled readonly" : ""
-        } name="${data.id}-text"/>
-      <button ${data.isCompleted ? "disabled" : ""} class="edit-btn" data-id="${
-          data.id
-        }">수정</button>
-      <button class="delete-btn" data-id="${data.id}">삭제</button>
+        (data) => `
+     <li class="list-item">
+          <label for="${data.id}-check" class="list-item-name">
+            <input type="checkbox" ${
+              data.isCompleted ? "checked" : ""
+            } class="checkbox" data-id="${data.id}" id="${data.id}-check"/>
+            <p class="${data.isCompleted ? "list-done" : ""}">${data.name}</p>
+          </label>
+          <div class="list-item-btn">
+            <button ${
+              data.isCompleted ? "disabled" : ""
+            } class="edit-btn" data-id="${data.id}">수정</button>
+            <button class="delete-btn" data-id="${data.id}">삭제</button>
+          </div>
     </li>
     `
       )
@@ -58,7 +61,8 @@ export default function TodoList(props) {
   const checkTodo = (target) => {
     const dataId = target.getAttribute("data-id");
     const targetInput = target.nextElementSibling;
-    const targetEditBtn = target.nextElementSibling.nextElementSibling;
+    const targetEditBtn =
+      target.parentElement.nextElementSibling.firstElementChild;
 
     if (target.checked) {
       targetInput.disabled = true;
@@ -83,11 +87,39 @@ export default function TodoList(props) {
 
   // 수정 버튼 클릭 핸들러
   const editTodo = (target) => {
+    const valueNodeParent = target.parentElement.previousElementSibling;
+    const valueNode = valueNodeParent.lastElementChild;
+
     const dataId = target.getAttribute("data-id");
-    const editValue = target.previousElementSibling.value;
-    if (editValue == "") return;
-    const newList = editData(dataId, "name", editValue, this.state.todoList);
-    saveList(newList);
+    if (valueNode.nodeName == "P") {
+      const input = document.createElement("input");
+      const targetValue = valueNode.textContent;
+      target.textContent = "저장";
+      input.type = "text";
+      input.value = targetValue;
+      input.placeholder = "할일을 입력합니다.";
+      valueNodeParent.insertBefore(input, valueNode);
+      valueNode.remove();
+    }
+
+    if (valueNode.nodeName == "INPUT") {
+      const pTag = document.createElement("p");
+      const targetValue = valueNode.value;
+      if (targetValue == "") return;
+
+      target.textContent = "수정";
+      pTag.textContent = targetValue;
+      valueNodeParent.insertBefore(pTag, valueNode);
+      valueNode.remove();
+
+      const newList = editData(
+        dataId,
+        "name",
+        targetValue,
+        this.state.todoList
+      );
+      saveList(newList);
+    }
   };
 
   // 삭제 버튼 클릭 핸들러
