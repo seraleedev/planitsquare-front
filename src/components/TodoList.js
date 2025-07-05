@@ -11,7 +11,7 @@ export default function TodoList(props) {
   this.template = () => {
     return this.state.todoList
       .map(
-        (data) => `<li>
+        (data) => `<li class="list-item">
       <input type="checkbox" ${
         data.isCompleted ? "checked" : ""
       } class="checkbox" data-id="${data.id}" name="${data.id}-check"/>
@@ -21,7 +21,7 @@ export default function TodoList(props) {
       <button ${data.isCompleted ? "disabled" : ""} class="edit-btn" data-id="${
           data.id
         }">수정</button>
-      <button class="delete-btn" data-id="${data.id}">X</button>
+      <button class="delete-btn" data-id="${data.id}">삭제</button>
     </li>
     `
       )

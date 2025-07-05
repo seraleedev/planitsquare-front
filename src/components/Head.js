@@ -12,9 +12,23 @@ export default function Head(props) {
 
   this.template = () => {
     const { completeTodo, totalTodo } = this.state;
-    return `<h1>Todo-list</h1>
-      <div><button id="allCheck">전체 완료</button><button id="allDelete">전체 삭제</button></div>
-      <div class="count-container"><span>전체: ${totalTodo}</span> <span>완료: ${completeTodo}</span></div>`;
+    return `<h1>Todo List</h1>
+       <div class="count-container">
+          <p>전체</p>
+          <div class="count-container-button">
+            <span>${totalTodo}개</span>
+            <button id="allDelete">전부삭제</button>
+          </div>
+       </div>
+       <div class="count-container">
+          <p>완료된 일</p>
+          <div class="count-container-button">
+          <span>${completeTodo}개</span>
+          <button id="allCheck">전부완료</button>
+          </div>
+   
+       </div>
+      `;
   };
 
   this.render = function () {

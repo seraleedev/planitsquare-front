@@ -1,0 +1,75 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #333;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+button {
+  min-width: 80px;
+  min-height: 40px;
+  padding: 5px !important;
+  cursor: pointer !important;
+}
+input {
+  padding: 5px;
+  min-height: 40px;
+}
+input[type="text"] {
+  width: 100%;
+}
+input[type="checkbox"] {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  accent-color: deeppink;
+}
+#app {
+  width: 500px;
+}
+#addForm {
+  display: flex;
+  gap: 5px;
+  margin: 20px 0;
+}
+
+.count-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.count-container-button {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.count-container span,
+.count-container p {
+  font-weight: 700;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.delete-btn {
+  all: unset;
+  display: inline-block;
+  text-align: center;
+  min-width: 30px;
+  color: #ff1313;
+  font-size: 14px;
+}

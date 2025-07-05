@@ -10,7 +10,7 @@ export default function Form(props) {
 
   this.template = () => {
     return `
-      <input id="addText" type="text" placeholder="할일 추가하기"/>
+      <input id="addText" type="text" placeholder="여기에 할일을 작성합니다."/>
       <button id="submitBtn">추가</button>
       `;
   };
