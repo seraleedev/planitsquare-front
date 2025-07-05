@@ -1,4 +1,9 @@
-const Model = ($container) => {
+/* props {
+  $container : 렌더링될 컨테이너 컴포넌트
+  todoList : props로 내려주는 할일 목록
+  setParentState : 컴포넌트 내에서 상태 변경이 일어날때 실행되는 부모 컴포넌트 리렌더링 함수
+}*/
+const Model = (props = { $container, todoList, setParentState }) => {
   // 글로벌 상태 세팅
   this.setup = () => {
     this.state = { [key]: value };
@@ -9,21 +14,16 @@ const Model = ($container) => {
     return ``;
   };
 
-  // 마운트 시
-  this.mounted = () => {
-    console.log("mount action");
-  };
-
   // UI 렌더링
   this.render = () => {
-    this.$container.innerHTML = this.template();
-    this.this.addEvent();
+    $container.innerHTML = this.template();
+    this.addEvent();
   };
 
   // 상태 변경 후 렌더링
   this.setState = (newState) => {
     this.state = { ...this.state, ...newState };
-    this.render();
+    setParentState();
   };
 
   //컴포넌트 이벤트 등록

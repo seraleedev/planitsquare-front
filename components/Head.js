@@ -1,9 +1,10 @@
 import { saveList } from "../util/index.js";
 
-export default function Head($container, props) {
+export default function Head(props) {
+  const { $container, todoList, setParentState } = props;
   this.setup = () => {
     this.state = {
-      ...props,
+      todoList,
       completeTodo: props.todoList.filter((todo) => todo.isCompleted).length,
       totalTodo: props.todoList.length,
     };
@@ -31,7 +32,7 @@ export default function Head($container, props) {
 
   this.setState = ({ newState }) => {
     this.state = { ...this.state, ...newState };
-    this.render();
+    setParentState();
   };
 
   // 전체 할일 완료하기
@@ -42,10 +43,7 @@ export default function Head($container, props) {
     }));
 
     saveList(newList);
-    this.setState({
-      todoList: newList,
-      completeTodo: newList.length,
-    });
+    this.setState({ todoList: newList, completeTodo: newList.length });
   };
 
   // 전체 할일 삭제하기

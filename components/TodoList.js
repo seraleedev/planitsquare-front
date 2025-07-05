@@ -1,9 +1,10 @@
-import { saveEditList, saveDeleteList } from "../util/index.js";
+import { editData, saveList } from "../util/index.js";
 
-export default function TodoList($container, props) {
+export default function TodoList(props) {
+  const { $container, todoList, setParentState } = props;
   this.setup = () => {
     this.state = {
-      ...props,
+      todoList,
     };
   };
 
@@ -29,7 +30,7 @@ export default function TodoList($container, props) {
 
   this.render = function () {
     $container.innerHTML = this.template();
-    this.event();
+    this.addEvent();
   };
 
   this.addEvent = () => {
@@ -48,6 +49,11 @@ export default function TodoList($container, props) {
     );
   };
 
+  this.setState = ({ newState }) => {
+    this.state = { ...this.state, ...newState };
+    setParentState();
+  };
+
   // 체크박스 클릭 핸들러
   const checkTodo = (target) => {
     const dataId = target.getAttribute("data-id");
@@ -64,7 +70,15 @@ export default function TodoList($container, props) {
       targetEditBtn.disabled = false;
     }
 
-    saveEditList(dataId, "isCompleted", target.checked, this.state.todoList);
+    const newList = editData(
+      dataId,
+      "isCompleted",
+      target.checked,
+      this.state.todoList
+    );
+
+    saveList(newList);
+    this.setState({ todoList: newList });
   };
 
   // 수정 버튼 클릭 핸들러
@@ -72,14 +86,18 @@ export default function TodoList($container, props) {
     const dataId = target.getAttribute("data-id");
     const editValue = target.previousElementSibling.value;
     if (editValue == "") return;
-    saveEditList(dataId, "name", editValue, this.state.todoList);
+    const newList = editData(dataId, "name", editValue, this.state.todoList);
+    saveList(newList);
   };
 
   // 삭제 버튼 클릭 핸들러
   const deleteTodo = (target) => {
     const dataId = target.getAttribute("data-id");
-    saveDeleteList(dataId, this.state.todoList);
+    const filterList = this.state.todoList.filter((item) => item.id !== dataId);
+
+    saveList(filterList);
     target.parentElement.remove();
+    this.setState({ todoList: filterList, totalTodo: filterList.length });
   };
 
   this.setup();

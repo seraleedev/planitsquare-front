@@ -14,25 +14,10 @@ export const loadTodo = (todoList) => {
 // 전체 데이터 저장 함수
 export const saveList = (newTodoList) => {
   localStorage.setItem(TODOLIST, JSON.stringify(newTodoList));
-  location.reload();
 };
 
-// 추가 데이터 저장 함수
-export const saveNewTodo = (data, todoList) => {
-  todoList.push(data);
-  localStorage.setItem(TODOLIST, JSON.stringify(todoList));
-  location.reload();
-};
-
-// 삭제 데이터 저장 함수
-export const saveDeleteList = (dataId, todoList) => {
-  const filterList = todoList.filter((item) => item.id !== dataId);
-  localStorage.setItem(TODOLIST, JSON.stringify(filterList));
-  location.reload();
-};
-
-// 수정 데이터 저장 함수
-export const saveEditList = (dataId, key, value, todoList, callBackFn) => {
+// 수정된 데이터 리턴 함수
+export const editData = (dataId, key, value, todoList) => {
   const targetItem = todoList.find((item) => item.id == dataId);
   const editData = {
     ...targetItem,
@@ -40,13 +25,11 @@ export const saveEditList = (dataId, key, value, todoList, callBackFn) => {
   };
   const targetIndex = todoList.indexOf(targetItem);
   todoList[targetIndex] = editData;
-  localStorage.setItem(TODOLIST, JSON.stringify(todoList));
-  if (callBackFn) callBackFn();
-  location.reload();
+
+  return todoList;
 };
 
 // 랜덤 아이디 생성 함수
 export const createDataId = () => {
   return Math.random().toString(16).substring(2, 8);
 };
-

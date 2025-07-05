@@ -1,8 +1,9 @@
 import Form from "./components/Form.js";
 import Head from "./components/Head.js";
 import TodoList from "./components/TodoList.js";
+import { loadTodo } from "./util/index.js";
 
-function App($container) {
+function App({ $container }) {
   this.setup = () => {
     this.state = {
       todoList: [],
@@ -15,24 +16,36 @@ function App($container) {
     <ul id="todoList"></ul>`;
   };
 
-  this.mounted = () => {
-    this.render();
-
+  this.render = () => {
+    $container.innerHTML = this.template();
     const $header = document.querySelector("#header");
     const $form = document.querySelector("#addForm");
     const $todoList = document.querySelector("#todoList");
 
-    new Head($header, this.state);
-    new Form($form, this.state);
-    new TodoList($todoList, this.state);
+    new Head({
+      $container: $header,
+      todoList: this.state.todoList,
+      setParentState: this.setState,
+    });
+    new Form({
+      $container: $form,
+      todoList: this.state.todoList,
+      setParentState: this.setState,
+    });
+    new TodoList({
+      $container: $todoList,
+      todoList: this.state.todoList,
+      setParentState: this.setState,
+    });
   };
 
-  this.render = () => {
-    $container.innerHTML = this.template();
+  this.setState = () => {
+    this.state = { ...this.state, todoList: loadTodo(this.state.todoList) };
+    this.render();
   };
 
   this.setup();
-  this.mounted();
+  this.setState();
 }
 
 export default App;

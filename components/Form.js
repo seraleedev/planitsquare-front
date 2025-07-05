@@ -1,9 +1,10 @@
-import { createDataId, saveNewTodo } from "../util/index.js";
+import { createDataId, saveList } from "../util/index.js";
 
-export default function Form($container, props) {
+export default function Form(props) {
+  const { $container, todoList, setParentState } = props;
   this.setup = () => {
     this.state = {
-      ...props,
+      todoList,
     };
   };
 
@@ -16,7 +17,7 @@ export default function Form($container, props) {
 
   this.render = function () {
     $container.innerHTML = this.template();
-    this.event();
+    this.addEvent();
   };
 
   this.addEvent = () => {
@@ -28,15 +29,16 @@ export default function Form($container, props) {
   const submitNewData = (event) => {
     const addText = document.querySelector("#addText");
     if (addText.value == "") return event.preventDefault();
-
+    event.preventDefault();
     const newData = {
       id: createDataId(),
       name: addText.value,
       isCompleted: false,
     };
-
-    saveNewTodo(newData, this.state.todoList);
+    this.state.todoList.push(newData);
+    saveList(this.state.todoList);
     addText.value = "";
+    setParentState();
   };
 
   this.setup();
