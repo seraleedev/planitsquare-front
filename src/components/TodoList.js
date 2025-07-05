@@ -13,18 +13,19 @@ export default function TodoList(props) {
       .map(
         (data) => `
      <li class="list-item">
-          <label for="${data.id}-check" class="list-item-name">
-            <input type="checkbox" ${
-              data.isCompleted ? "checked" : ""
-            } class="checkbox" data-id="${data.id}" id="${data.id}-check"/>
-            <p class="${data.isCompleted ? "list-done" : ""}">${data.name}</p>
-          </label>
-          <div class="list-item-btn">
-            <button ${
-              data.isCompleted ? "disabled" : ""
-            } class="edit-btn" data-id="${data.id}">수정</button>
-            <button class="delete-btn" data-id="${data.id}">삭제</button>
-          </div>
+       <div class="list-item-head">
+          <input type="checkbox" class="checkbox" data-id="${data.id}" id="${
+          data.id
+        }-check"/>     
+       
+         <p class="list-item-name ${
+           data.isCompleted ? "list-done" : ""
+         }" data-id="${data.id}">${data.name}</p>
+        </div>
+          
+        <div class="list-item-btn">  
+          <button class="delete-btn" data-id="${data.id}">삭제</button>
+        </div>
     </li>
     `
       )
@@ -38,14 +39,14 @@ export default function TodoList(props) {
 
   this.addEvent = () => {
     const Checkboxes = document.querySelectorAll(".checkbox");
-    const EditBtn = document.querySelectorAll(".edit-btn");
+    const ItemName = document.querySelectorAll(".list-item-name");
     const DeleteBtn = document.querySelectorAll(".delete-btn");
 
     Checkboxes.forEach((ele) =>
       ele.addEventListener("change", (event) => checkTodo(event.target))
     );
-    EditBtn.forEach((ele) =>
-      ele.addEventListener("click", (event) => editTodo(event.target))
+    ItemName.forEach((ele) =>
+      ele.addEventListener("click", (event) => toggleDone(event.target))
     );
     DeleteBtn.forEach((ele) =>
       ele.addEventListener("click", (event) => deleteTodo(event.target))
@@ -57,27 +58,15 @@ export default function TodoList(props) {
     setParentState();
   };
 
-  // 체크박스 클릭 핸들러
-  const checkTodo = (target) => {
+  // 할일 클릭시 완료 핸들러
+  const toggleDone = (target) => {
     const dataId = target.getAttribute("data-id");
-    const targetInput = target.nextElementSibling;
-    const targetEditBtn =
-      target.parentElement.nextElementSibling.firstElementChild;
-
-    if (target.checked) {
-      targetInput.disabled = true;
-      targetInput.readOnly = true;
-      targetEditBtn.disabled = true;
-    } else {
-      targetInput.disabled = false;
-      targetInput.readOnly = false;
-      targetEditBtn.disabled = false;
-    }
+    target.classList.toggle("list-done");
 
     const newList = editData(
       dataId,
       "isCompleted",
-      target.checked,
+      target.classList.contains("list-done"),
       this.state.todoList
     );
 
@@ -85,41 +74,69 @@ export default function TodoList(props) {
     this.setState({ todoList: newList });
   };
 
-  // 수정 버튼 클릭 핸들러
-  const editTodo = (target) => {
-    const valueNodeParent = target.parentElement.previousElementSibling;
-    const valueNode = valueNodeParent.lastElementChild;
-
+  // 체크박스 클릭 핸들러
+  const checkTodo = (target) => {
+    const targetParent = target.parentElement;
+    const targetName = target.nextElementSibling;
+    const btnBox = targetParent.nextElementSibling;
     const dataId = target.getAttribute("data-id");
-    if (valueNode.nodeName == "P") {
+    const isDone = targetName.classList.contains("list-done");
+
+    if (targetName.nodeName == "P") {
       const input = document.createElement("input");
-      const targetValue = valueNode.textContent;
-      target.textContent = "저장";
+      const editBtn = document.createElement("button");
+      const targetValue = targetName.textContent;
+
+      editBtn.className = "edit-btn";
+      editBtn.textContent = "저장";
+      editBtn.setAttribute("data-id", dataId);
+      editBtn.disabled = isDone;
+
       input.type = "text";
       input.value = targetValue;
+      input.readOnly = isDone;
+      input.className = isDone ? "list-done" : "";
       input.placeholder = "할일을 입력합니다.";
-      valueNodeParent.insertBefore(input, valueNode);
-      valueNode.remove();
+
+      editBtn.addEventListener("click", () => editTodo(editBtn));
+      targetParent.insertBefore(input, targetName);
+      btnBox.insertBefore(editBtn, btnBox.firstElementChild);
+      targetName.remove();
     }
 
-    if (valueNode.nodeName == "INPUT") {
+    if (targetName.nodeName == "INPUT") {
       const pTag = document.createElement("p");
-      const targetValue = valueNode.value;
+      const editBtn = btnBox.firstElementChild;
+      const targetValue = targetName.value;
+
       if (targetValue == "") return;
 
-      target.textContent = "수정";
       pTag.textContent = targetValue;
-      valueNodeParent.insertBefore(pTag, valueNode);
-      valueNode.remove();
+      pTag.setAttribute("data-id", dataId);
+      pTag.className = isDone ? "list-done" : "";
+      pTag.classList.add("list-item-name");
 
-      const newList = editData(
-        dataId,
-        "name",
-        targetValue,
-        this.state.todoList
-      );
-      saveList(newList);
+      targetParent.insertBefore(pTag, targetName);
+      editBtn.remove();
+      targetName.remove();
     }
+  };
+
+  // 저장 버튼 클릭 핸들러
+  const editTodo = (target) => {
+    const targetInput =
+      target.parentElement.previousElementSibling.lastElementChild;
+    const dataId = target.getAttribute("data-id");
+
+    const newList = editData(
+      dataId,
+      "name",
+      targetInput.value,
+      this.state.todoList
+    );
+
+    saveList(newList);
+    this.setState({ todoList: newList });
   };
 
   // 삭제 버튼 클릭 핸들러
