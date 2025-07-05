@@ -7,7 +7,6 @@ export default function Head($container, props) {
       completeTodo: props.todoList.filter((todo) => todo.isCompleted).length,
       totalTodo: props.todoList.length,
     };
-    this.render();
   };
 
   this.template = () => {
@@ -60,4 +59,5 @@ export default function Head($container, props) {
   };
 
   this.setup();
+  this.render();
 }

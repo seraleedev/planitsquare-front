@@ -1,48 +1,43 @@
-export const model = [
-  {
-    name: "리액트 복습",
-    isCompleted: true,
-  },
-  {
-    name: "타입스크립트 공부",
-    isCompleted: false,
-  },
-];
-
-export function Model($container) {
+const Model = ($container) => {
   // 글로벌 상태 세팅
-  const setup = () => {};
+  this.setup = () => {
+    this.state = { [key]: value };
+  };
 
   // UI구성
-  const template = () => {
+  this.template = () => {
     return ``;
   };
 
   // 마운트 시
-  const mounted = () => {};
-
-  // UI 렌더링
-  const render = () => {
-    this.$container.innerHTML = this.template();
-    this.setEvent();
+  this.mounted = () => {
+    console.log("mount action");
   };
 
-  //컴포넌트 이벤트
-  const setEvent = () => {};
+  // UI 렌더링
+  this.render = () => {
+    this.$container.innerHTML = this.template();
+    this.this.addEvent();
+  };
 
   // 상태 변경 후 렌더링
-  const setState = (newState) => {
+  this.setState = (newState) => {
     this.state = { ...this.state, ...newState };
     this.render();
   };
 
-  //이벤트 등록
-  const addEvent = (eventType, selector, callBackFn) => {
-    this.$target.addEventListener(eventType, (event) => {
-      if (!event.target.closet(selector)) return false;
-      callBackFn(event);
-    });
-  };
+  //컴포넌트 이벤트 등록
+  this.addEvent = () => {
+    const $target = document.querySelector("");
+    const $targets = document.querySelectorAll("");
 
-  return { setup, template, mounted, render, setEvent, setState, addEvent };
-}
+    $target.addEventListener("click", (event) => {
+      console.log("event");
+    });
+    $targets.forEach((ele) =>
+      ele.addEventListener("click", (event) => {
+        console.log("event");
+      })
+    );
+  };
+};

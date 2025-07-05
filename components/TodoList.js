@@ -32,7 +32,7 @@ export default function TodoList($container, props) {
     this.event();
   };
 
-  this.event = () => {
+  this.addEvent = () => {
     const Checkboxes = document.querySelectorAll(".checkbox");
     const EditBtn = document.querySelectorAll(".edit-btn");
     const DeleteBtn = document.querySelectorAll(".delete-btn");

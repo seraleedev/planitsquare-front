@@ -19,7 +19,7 @@ export default function Form($container, props) {
     this.event();
   };
 
-  this.event = () => {
+  this.addEvent = () => {
     const submitBtn = document.querySelector("#submitBtn");
     submitBtn.addEventListener("click", (event) => submitNewData(event));
   };
