@@ -78,6 +78,7 @@ export default function TodoList(props) {
   const checkTodo = (target) => {
     const targetParent = target.parentElement;
     const targetName = target.nextElementSibling;
+    const originText = targetName.textContent || targetName.value;
     const btnBox = targetParent.nextElementSibling;
     const dataId = target.getAttribute("data-id");
     const isDone = targetName.classList.contains("list-done");
@@ -85,7 +86,6 @@ export default function TodoList(props) {
     if (targetName.nodeName == "P") {
       const input = document.createElement("input");
       const editBtn = document.createElement("button");
-      const targetValue = targetName.textContent;
 
       editBtn.className = "edit-btn";
       editBtn.textContent = "저장";
@@ -93,7 +93,7 @@ export default function TodoList(props) {
       editBtn.disabled = isDone;
 
       input.type = "text";
-      input.value = targetValue;
+      input.value = originText;
       input.readOnly = isDone;
       input.className = isDone ? "list-done" : "";
       input.placeholder = "할일을 입력합니다.";
@@ -107,18 +107,17 @@ export default function TodoList(props) {
     if (targetName.nodeName == "INPUT") {
       const pTag = document.createElement("p");
       const editBtn = btnBox.firstElementChild;
-      const targetValue = targetName.value;
+      const newValue = targetName.value;
 
-      if (targetValue == "") return;
-
-      pTag.textContent = targetValue;
+      pTag.textContent = newValue == "" ? originText : newValue;
       pTag.setAttribute("data-id", dataId);
-      pTag.className = isDone ? "list-done" : "";
       pTag.classList.add("list-item-name");
+      if (isDone) pTag.classList.add("list-done");
 
       targetParent.insertBefore(pTag, targetName);
       editBtn.remove();
       targetName.remove();
+      setParentState();
     }
   };
 
@@ -127,6 +126,8 @@ export default function TodoList(props) {
     const targetInput =
       target.parentElement.previousElementSibling.lastElementChild;
     const dataId = target.getAttribute("data-id");
+
+    if (targetInput.value == "") return;
 
     const newList = editData(
       dataId,
