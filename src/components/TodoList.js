@@ -83,6 +83,7 @@ export default function TodoList(props) {
     const dataId = target.getAttribute("data-id");
     const isDone = targetName.classList.contains("list-done");
 
+    // p를 input으로 전환
     if (targetName.nodeName == "P") {
       const input = document.createElement("input");
       const editBtn = document.createElement("button");
@@ -102,8 +103,10 @@ export default function TodoList(props) {
       targetParent.insertBefore(input, targetName);
       btnBox.insertBefore(editBtn, btnBox.firstElementChild);
       targetName.remove();
+      return;
     }
 
+    // input을 p로 전환
     if (targetName.nodeName == "INPUT") {
       const pTag = document.createElement("p");
       const editBtn = btnBox.firstElementChild;
@@ -114,10 +117,11 @@ export default function TodoList(props) {
       pTag.classList.add("list-item-name");
       if (isDone) pTag.classList.add("list-done");
 
+      pTag.addEventListener("click", (event) => toggleDone(event.target));
       targetParent.insertBefore(pTag, targetName);
-      editBtn.remove();
       targetName.remove();
-      setParentState();
+      editBtn.remove();
+      return;
     }
   };
 
