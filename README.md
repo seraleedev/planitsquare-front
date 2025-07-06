@@ -2,6 +2,8 @@
 
 > 순수 자바스크립트를 이용하여 웹 컴포넌트를 구현하고, todoList 기능을 만든 프로젝트입니다.
 >
+> 코드를 다운받거나, https://seraleedev.github.io/planitsquare-front 에서 구현 확인이 가능합니다.
+>
 > 사용기술 : javascript, CSS
 
 ![screenshot](./screenshot.png)
