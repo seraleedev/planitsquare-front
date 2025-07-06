@@ -1,4 +1,4 @@
-import { editData, saveList } from "../util/index.js";
+import { editData, saveList } from "../util/util.js";
 
 export default function TodoList(props) {
   const { $container, todoList, setParentState } = props;

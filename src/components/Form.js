@@ -1,4 +1,4 @@
-import { createDataId, saveList } from "../util/index.js";
+import { createDataId, saveList } from "../util/util.js";
 
 export default function Form(props) {
   const { $container, todoList, setParentState } = props;

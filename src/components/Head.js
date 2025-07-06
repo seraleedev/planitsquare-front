@@ -1,4 +1,4 @@
-import { saveList } from "../util/index.js";
+import { saveList } from "../util/util.js";
 
 export default function Head(props) {
   const { $container, todoList, setParentState } = props;

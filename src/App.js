@@ -1,7 +1,7 @@
 import Form from "./components/Form.js";
 import Head from "./components/Head.js";
 import TodoList from "./components/TodoList.js";
-import { loadTodo } from "./util/index.js";
+import { loadTodo } from "./util/util.js";
 
 function App({ $container }) {
   this.setup = () => {

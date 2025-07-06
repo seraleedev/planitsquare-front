@@ -3,15 +3,25 @@
   todoList : props로 내려주는 할일 목록
   setParentState : 컴포넌트 내에서 상태 변경이 일어날때 실행되는 부모 컴포넌트 리렌더링 함수
 }*/
+const propsType = {
+  $container: HTMLElement,
+  todoList: [{ name: String, isCompleted: Boolean, id: String }],
+  setParentState: function () {},
+};
+
 const Model = (props = { $container, todoList, setParentState }) => {
   // 글로벌 상태 세팅
   this.setup = () => {
-    this.state = { [key]: value };
+    this.state = { ...props, sampleKey: sampleValue };
   };
 
   // UI구성
   this.template = () => {
-    return ``;
+    const sample = `
+    <article>
+     <h1>Hello World</h1>
+    </article>`;
+    return sample;
   };
 
   // UI 렌더링
